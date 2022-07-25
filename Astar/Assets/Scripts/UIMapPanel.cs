@@ -5,57 +5,57 @@ using UnityEngine.UI;
 
 public class UIMapPanel : MonoBehaviour
 {
-    public int Width;
-    public int Height;
+	public int Width;
+	public int Height;
 
-    public AstarMap Map = new AstarMap();
-    public UIMapItem NodeItemOrg;
-    public GridLayoutGroup NodesGroup;
-    public Button GoButton;
-    public int StartX, StartY, GoalX, GoalY;
+	public AstarMap Map = new AstarMap();
+	public UIMapItem NodeItemOrg;
+	public GridLayoutGroup NodesGroup;
+	public Button GoButton;
+	public int StartX, StartY, GoalX, GoalY;
 
-    private UIMapItem[] m_MapItems;
-    
-    
-    public void BuildMap(int width, int height)
-    {
-        Map.Init(width, height);
-        NodeItemOrg.gameObject.SetActive(false);
+	private UIMapItem[] m_MapItems;
+	
+	
+	public void BuildMap(int width, int height)
+	{
+		Map.Init(width, height);
+		NodeItemOrg.gameObject.SetActive(false);
 
-        m_MapItems = new UIMapItem[Map.Grids.Length];
+		m_MapItems = new UIMapItem[Map.Grids.Length];
 
-        for (int i = 0; i < m_MapItems.Length; ++i)
-        {
-            GameObject go = GameObject.Instantiate<GameObject>(NodeItemOrg.gameObject, NodesGroup.transform);
-            UIMapItem item = go.GetComponent<UIMapItem>();
-            MapNode node = Map.Grids[i];
-            item.Init(node);
-            m_MapItems[i] = item;
+		for (int i = 0; i < m_MapItems.Length; ++i)
+		{
+			GameObject go = GameObject.Instantiate<GameObject>(NodeItemOrg.gameObject, NodesGroup.transform);
+			UIMapItem item = go.GetComponent<UIMapItem>();
+			MapNode node = Map.Grids[i];
+			item.Init(node);
+			m_MapItems[i] = item;
 
-            go.SetActive(true);
-        }
-        NodesGroup.constraintCount = width;
-    }
-
-
-    public void RefreshItems()
-    {
-        for (int i = 0; i < m_MapItems.Length; ++i)
-        {
-            m_MapItems[i].RefreshItem();
-        }
-    }
+			go.SetActive(true);
+		}
+		NodesGroup.constraintCount = width;
+	}
 
 
-    public void DrawPath(List<MapNode> nodes)
-    {
-        for (int i = 0; i < nodes.Count; ++i)
-        {
-            MapNode node = nodes[i];
+	public void RefreshItems()
+	{
+		for (int i = 0; i < m_MapItems.Length; ++i)
+		{
+			m_MapItems[i].RefreshItem();
+		}
+	}
+
+
+	public void DrawPath(List<MapNode> nodes)
+	{
+		for (int i = 0; i < nodes.Count; ++i)
+		{
+			MapNode node = nodes[i];
 			UIMapItem item = this.GetItem(node.X, node.Y);
 			item.DrawPathNode();
-        }
-    }
+		}
+	}
 
 
 	public void DrawPushNode(int index_x, int index_y, float f)
@@ -74,16 +74,16 @@ public class UIMapPanel : MonoBehaviour
 	}
 
 
-    private void Awake()
-    {
-        this.BuildMap(Width, Height);
-        GoButton.onClick.AddListener(()=>
+	private void Awake()
+	{
+		this.BuildMap(Width, Height);
+		GoButton.onClick.AddListener(()=>
 		{
 			this.RefreshItems();
 			this.StopAllCoroutines();
 			this.StartCoroutine(Map.AStarSearch(StartX, StartY, GoalX, GoalY, this.OnDrawPath, this.OnPushNode));
-        });
-    }
+		});
+	}
 
 
 	private void OnDrawPath(List<MapNode> nodes)
@@ -100,5 +100,5 @@ public class UIMapPanel : MonoBehaviour
 		this.DrawPushNode(index_x, index_y, f);
 	}
 
-    
+	
 }
